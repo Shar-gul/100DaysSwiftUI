@@ -62,7 +62,8 @@ struct ContentView: View {
                     .keyboardType(.decimalPad)
                     .focused($amountIsFocused)
                     
-                    Picker("Temperature Unit", selection: $inputUnit) {
+                    Picker("Temperature Unit",
+                           selection: $inputUnit) {
                         ForEach(units, id: \.self) {
                             Text("\($0)")
                         }
@@ -73,7 +74,8 @@ struct ContentView: View {
                 }
                 
                 Section {
-                    Picker("Temperature Unit", selection: $outputUnit) {
+                    Picker("Temperature Unit",
+                           selection: $outputUnit) {
                         ForEach(units, id: \.self) {
                             Text("\($0)")
                         }

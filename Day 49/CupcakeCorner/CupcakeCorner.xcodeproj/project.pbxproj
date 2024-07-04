@@ -19,7 +19,6 @@
 		689E81D42C04D2BA0013C671 /* ContentViewLesson3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689E81D32C04D2BA0013C671 /* ContentViewLesson3.swift */; };
 		689E81D62C04D45C0013C671 /* ContentViewLesson4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689E81D52C04D45C0013C671 /* ContentViewLesson4.swift */; };
 		689E81D82C04DA7F0013C671 /* ContentViewLesson5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689E81D72C04DA7F0013C671 /* ContentViewLesson5.swift */; };
-		68A0E64D2C35F7DD00E0AC29 /* ObservableOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A0E64C2C35F7DD00E0AC29 /* ObservableOrder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +35,6 @@
 		689E81D32C04D2BA0013C671 /* ContentViewLesson3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewLesson3.swift; sourceTree = "<group>"; };
 		689E81D52C04D45C0013C671 /* ContentViewLesson4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewLesson4.swift; sourceTree = "<group>"; };
 		689E81D72C04DA7F0013C671 /* ContentViewLesson5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewLesson5.swift; sourceTree = "<group>"; };
-		68A0E64C2C35F7DD00E0AC29 /* ObservableOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableOrder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,7 +70,6 @@
 				684DCC782BED259E00854A01 /* CupcakeCornerApp.swift */,
 				684DCC7A2BED259E00854A01 /* ContentView.swift */,
 				688A77582C247B3200868A67 /* Order.swift */,
-				68A0E64C2C35F7DD00E0AC29 /* ObservableOrder.swift */,
 				688A775A2C2487C200868A67 /* AddressView.swift */,
 				688A775C2C24968A00868A67 /* CheckoutView.swift */,
 				689E81CF2C04D1ED0013C671 /* ContentViewLesson1.swift */,
@@ -171,7 +168,6 @@
 				684DCC792BED259E00854A01 /* CupcakeCornerApp.swift in Sources */,
 				689E81D02C04D1ED0013C671 /* ContentViewLesson1.swift in Sources */,
 				688A775B2C2487C200868A67 /* AddressView.swift in Sources */,
-				68A0E64D2C35F7DD00E0AC29 /* ObservableOrder.swift in Sources */,
 				689E81D82C04DA7F0013C671 /* ContentViewLesson5.swift in Sources */,
 				689E81D22C04D2130013C671 /* ContentViewLesson2.swift in Sources */,
 				689E81D62C04D45C0013C671 /* ContentViewLesson4.swift in Sources */,

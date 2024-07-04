@@ -14,7 +14,7 @@ private enum AlertType {
 }
 
 struct CheckoutView: View {
-    var order: Order
+    @ObservedObject var model: Model
     
     @State private var alert: Alert = Alert(title: Text("Checkout"))
     @State private var showingAlert = false
@@ -31,7 +31,7 @@ struct CheckoutView: View {
                 }
                 .frame(height: 233)
 
-                Text("Your total is \(order.cost, format: .currency(code: "USD"))")
+                Text("Your total is \(model.order.cost, format: .currency(code: "USD"))")
                     .font(.title)
 
                 Button("Place Order") {
@@ -51,7 +51,7 @@ struct CheckoutView: View {
     }
     
     func placeOrder() async {
-        guard let encoded = try? JSONEncoder().encode(order) else {
+        guard let encoded = try? JSONEncoder().encode(model.order) else {
             createAlert(type: .error,
                         message: "Failed to encode order")
             return
@@ -65,8 +65,8 @@ struct CheckoutView: View {
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
             
-            let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
-            let message = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
+            let decodedOrder = try JSONDecoder().decode(Model.Order.self, from: data)
+            let message = "Your order for \(decodedOrder.quantity)x \(Model.Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
             createAlert(type: .confirmation,
                         message: message)
         } catch {
@@ -92,5 +92,5 @@ struct CheckoutView: View {
 }
 
 #Preview {
-    CheckoutView(order: Order())
+    CheckoutView(model: Model())
 }

@@ -10,7 +10,24 @@ import Foundation
 class Model: ObservableObject {
     @Published var order = Order()
     
-    class Order: Codable {
+    struct Order: Codable {
+        init() {}
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            type = try container.decode(Int.self, forKey: ._type)
+            quantity = try container.decode(Int.self, forKey: ._quantity)
+            
+            extraFrosting = try container.decode(Bool.self, forKey: ._extraFrosting)
+            addSprinkles = try container.decode(Bool.self, forKey: ._addSprinkles)
+            
+            name = try container.decode(String.self, forKey: ._name)
+            streetAddress = try container.decode(String.self, forKey: ._streetAddress)
+            city = try container.decode(String.self, forKey: ._city)
+            zip = try container.decode(String.self, forKey: ._zip)
+        }
+        
         enum CodingKeys: String, CodingKey {
             case _type = "type"
             case _quantity = "quantity"
@@ -108,7 +125,6 @@ class Model: ObservableObject {
             return cost
         }
         
-        init() {}
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             
@@ -122,21 +138,6 @@ class Model: ObservableObject {
             try container.encode(streetAddress, forKey: ._streetAddress)
             try container.encode(city, forKey: ._city)
             try container.encode(zip, forKey: ._zip)
-        }
-        
-        required init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            
-            type = try container.decode(Int.self, forKey: ._type)
-            quantity = try container.decode(Int.self, forKey: ._quantity)
-            
-            extraFrosting = try container.decode(Bool.self, forKey: ._extraFrosting)
-            addSprinkles = try container.decode(Bool.self, forKey: ._addSprinkles)
-            
-            name = try container.decode(String.self, forKey: ._name)
-            streetAddress = try container.decode(String.self, forKey: ._streetAddress)
-            city = try container.decode(String.self, forKey: ._city)
-            zip = try container.decode(String.self, forKey: ._zip)
         }
         
         private func readFromUserDefaults(key: String) -> String {

@@ -35,11 +35,22 @@ struct ExpensesView: View {
         }
     }
     
-    init(sortOrder: [SortDescriptor<Expense>]) {
-//        _expenses = Query(filter: #Predicate<Expense> { item in
-//            item.type == "Business" || item.type == "Personal"
-//        }, sort: sortOrder)
-        _expenses = Query(sort: sortOrder)
+    init(sortOrder: [SortDescriptor<Expense>], 
+         filter: FilterType) {
+        
+        switch filter {
+        case .all:
+            _expenses = Query(filter: #Predicate<Expense> { $0.type == "Business" || $0.type == "Personal" },
+                              sort: sortOrder)
+            
+        case .business:
+            _expenses = Query(filter: #Predicate<Expense> { $0.type == "Business" },
+                              sort: sortOrder)
+            
+        case .personal:
+            _expenses = Query(filter: #Predicate<Expense> { $0.type == "Personal" },
+                              sort: sortOrder)
+        }
     }
     
     private func removeItems(at offsets: IndexSet) {
@@ -52,6 +63,7 @@ struct ExpensesView: View {
 }
 
 #Preview {
-    ExpensesView(sortOrder: [SortDescriptor(\Expense.name)])
+    ExpensesView(sortOrder: [SortDescriptor(\Expense.name)], 
+                 filter: FilterType.all)
         .modelContainer(for: Expense.self)
 }

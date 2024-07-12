@@ -8,6 +8,12 @@
 import SwiftData
 import SwiftUI
 
+enum FilterType {
+    case all
+    case business
+    case personal
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     
@@ -15,12 +21,14 @@ struct ContentView: View {
         SortDescriptor(\Expense.name),
         SortDescriptor(\Expense.amount),
     ]
+    @State private var filterType: FilterType = .all
     
     @State private var showingAddExpense = false
 
     var body: some View {
         NavigationStack {
-            ExpensesView(sortOrder: sortOrder)
+            ExpensesView(sortOrder: sortOrder, 
+                         filter: filterType)
             .navigationTitle("iExpense")
             .toolbar {
                 Button {
@@ -43,19 +51,18 @@ struct ContentView: View {
                             ])
                     }
                 }
-//                Menu("Filter", systemImage: "scissors") {
-//                    Picker("Filter", selection: $sortOrder) {
-//                        Text("Filter by Business Type")
-//                            .tag([
-//                                SortDescriptor(\Expense.type, comparator: .localizedStandard),
-//                            ])
-//                        
-//                        Text("Filter by Personal Type")
-//                            .tag([
-//                                SortDescriptor(\Expense.type)
-//                            ])
-//                    }
-//                }
+                Menu("Filter", systemImage: "scissors") {
+                    Picker("Filter by Type", selection: $filterType) {
+                        Text("All")
+                            .tag(FilterType.all)
+                        
+                        Text("Business")
+                            .tag(FilterType.business)
+                        
+                        Text("Personal")
+                            .tag(FilterType.personal)
+                    }
+                }
             }
             .sheet(isPresented: $showingAddExpense) {
                 AddView()

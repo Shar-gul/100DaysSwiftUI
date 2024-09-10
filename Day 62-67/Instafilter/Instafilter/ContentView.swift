@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var filterIntensity = 0.5
     @State private var showingFilters = false
     
-    @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
+    @State private var currentFilter: CIFilter? = nil
     let context = CIContext()
     
     var body: some View {
@@ -46,15 +46,18 @@ struct ContentView: View {
                 
                 HStack {
                     Text("Intensity")
+                        .foregroundStyle((currentFilter == nil) ? .gray : .black)
                     Slider(value: $filterIntensity)
                         .onChange(of: filterIntensity,
                                   applyProcessing)
+                        .disabled(currentFilter == nil)
                 }
                 .padding(.vertical)
                 
                 HStack {
                     Button("Change Filter",
                            action: changeFilter)
+                    .disabled(currentFilter == nil)
                     
                     Spacer()
                     
@@ -90,12 +93,15 @@ struct ContentView: View {
             guard let inputImage = UIImage(data: imageData) else { return }
 
             let beginImage = CIImage(image: inputImage)
-            currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+            currentFilter = CIFilter.sepiaTone()
+            currentFilter?.setValue(beginImage, forKey: kCIInputImageKey)
             applyProcessing()
         }
     }
     
     func applyProcessing() {
+        guard let currentFilter = currentFilter else { return }
+        
         let inputKeys = currentFilter.inputKeys
 
         if inputKeys.contains(kCIInputIntensityKey) { currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey) }

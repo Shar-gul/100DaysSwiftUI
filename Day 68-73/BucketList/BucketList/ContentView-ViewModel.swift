@@ -9,6 +9,18 @@ import CoreLocation
 import LocalAuthentication
 import MapKit
 
+enum AlertDismissButtonType {
+    case `default`
+    case cancel
+}
+
+struct AlertContent {
+    var title: String
+    var message: String
+    var dismissButtonType: AlertDismissButtonType
+    var dismissButtonText: String?
+}
+
 extension ContentView {
     @Observable
     class ViewModel {
@@ -17,6 +29,8 @@ extension ContentView {
         private(set) var locations: [Location]
         var selectedPlace: Location?
         var isUnlocked = false
+        var showingAlert: Bool = false
+        var alertContent: AlertContent?
         
         init() {
             do {
@@ -66,12 +80,23 @@ extension ContentView {
 
                     if success {
                         self.isUnlocked = true
+                        self.showingAlert = false
                     } else {
                         // error
+                        self.showingAlert = true
+                        self.alertContent = AlertContent(title: "Error",
+                                                         message: "Number of tries exceded, face not recognized.",
+                                                         dismissButtonType: .default,
+                                                         dismissButtonText: "Ok")
                     }
                 }
             } else {
                 // no biometrics
+                self.showingAlert = true
+                self.alertContent = AlertContent(title: "Warning",
+                                                 message: "No Biometric evalueation available on this device.",
+                                                 dismissButtonType: .cancel,
+                                                 dismissButtonText: nil)
             }
         }
     }

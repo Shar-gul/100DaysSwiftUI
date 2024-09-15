@@ -71,8 +71,8 @@
 			children = (
 				689171CE2C849DD50099F5EB /* BucketListApp.swift */,
 				689171D02C849DD50099F5EB /* ContentView.swift */,
-				68AC6F4F2C8B637600846172 /* EditView.swift */,
 				68AC6F532C8F681F00846172 /* ContentView-ViewModel.swift */,
+				68AC6F4F2C8B637600846172 /* EditView.swift */,
 				68AC6F512C8F5B3400846172 /* Result.swift */,
 				68AC6F4D2C8B4D8E00846172 /* Location.swift */,
 				689171DE2C85FE8F0099F5EB /* Lesson1View.swift */,

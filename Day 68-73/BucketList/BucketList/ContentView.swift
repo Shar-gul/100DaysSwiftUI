@@ -24,6 +24,13 @@ struct ContentView: View {
         )
     )
     
+    private var selectedMapStyle: MapStyle {
+        return switch mapStyleType {
+        case .standard: .standard
+        case .hybrid: .hybrid
+        }
+    }
+    
     var body: some View {
         if viewModel.isUnlocked {
             VStack {
@@ -43,7 +50,7 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .mapStyle(convertStyle())
+                    .mapStyle(selectedMapStyle)
                     .onTapGesture { position in
                         if let coordinate = proxy.convert(position, from: .local) {
                             viewModel.addLocation(at: coordinate)
@@ -67,15 +74,22 @@ struct ContentView: View {
                 .background(.blue)
                 .foregroundStyle(.white)
                 .clipShape(.capsule)
+                .alert(isPresented: $viewModel.showingAlert, content: {
+                    Alert(title: Text(viewModel.alertContent?.title ?? ""),
+                          message: Text(viewModel.alertContent?.message ?? ""),
+                          dismissButton: viewModel.alertContent?.buildButton())
+                })
         }
     }
-    
-    private func convertStyle() -> MapStyle {
-        switch mapStyleType {
-        case .standard:
-            return .standard
-        case .hybrid:
-            return .hybrid
+}
+
+private extension AlertContent {
+    func buildButton() -> Alert.Button {
+        return switch self.dismissButtonType {
+        case .default:
+            Alert.Button.default(Text(self.dismissButtonText ?? "Ok"))
+        case .cancel:
+            Alert.Button.cancel(Text(self.dismissButtonText ?? "Cancel"))
         }
     }
 }

@@ -113,7 +113,7 @@ struct ContentView: View {
     func flagTapped(_ number: Int) {
         selectedFlag = number
         
-        if number == correctAnswer{
+        if number == correctAnswer {
             scoreTitle = "Correct"
             score = score + 1
         } else {
@@ -126,7 +126,7 @@ struct ContentView: View {
         }
         
         withAnimation(.easeInOut) {
-                isAnimatingOpacity = true
+            isAnimatingOpacity = true
         }
         
         withAnimation {

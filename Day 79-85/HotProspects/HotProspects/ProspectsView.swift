@@ -15,11 +15,17 @@ struct ProspectsView: View {
         case none, contacted, uncontacted
     }
     
-    @Query(sort: \Prospect.name) var prospects: [Prospect]
+    enum SortType {
+        case name, creationDate
+    }
+    
+    @Query(sort: [SortDescriptor(\Prospect.name)])
+    var prospects: [Prospect]
     @Environment(\.modelContext) var modelContext
     
     @State private var isShowingScanner = false
     @State private var selectedProspects = Set<Prospect>()
+    @State private var sortedBy: SortType = .name
     
     let filter: FilterType
     
@@ -34,17 +40,30 @@ struct ProspectsView: View {
         }
     }
     
+    var sortedProspects: [Prospect] {
+        switch sortedBy {
+        case .name:
+            return prospects.sorted(by: { $0.name < $1.name })
+        case .creationDate:
+            return prospects.sorted(by: { $0.creationDate > $1.creationDate})
+        }
+    }
+    
     var body: some View {
         NavigationStack {
-            List(prospects, selection: $selectedProspects) { prospect in
-                HStack(alignment: .center) {
-                    Image(systemName: "phone.badge.checkmark")
-                        .foregroundStyle(prospect.isContacted ? .green : .gray)
-                    VStack(alignment: .leading) {
-                        Text(prospect.name)
-                            .font(.headline)
-                        Text(prospect.emailAddress)
-                            .foregroundStyle(.secondary)
+            List(sortedProspects, selection: $selectedProspects) { prospect in
+                NavigationLink {
+                    EditProspect(prospect: prospect)
+                } label : {
+                    HStack(alignment: .center) {
+                        Image(systemName: "phone.badge.checkmark")
+                            .foregroundStyle(prospect.isContacted ? .green : .gray)
+                        VStack(alignment: .leading) {
+                            Text(prospect.name)
+                                .font(.headline)
+                            Text(prospect.emailAddress)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .swipeActions {
@@ -73,7 +92,16 @@ struct ProspectsView: View {
             }
             .navigationTitle(title)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Menu("Sort", systemImage: "arrow.up.arrow.down") {
+                        Picker("Sort", selection: $sortedBy) {
+                            Text("Sort by Name")
+                                .tag(SortType.name)
+                            
+                            Text("Sort by Most recent")
+                                .tag(SortType.creationDate)
+                        }
+                    }
                     Button("Scan", systemImage: "qrcode.viewfinder") {
                         isShowingScanner = true
                     }
@@ -99,15 +127,16 @@ struct ProspectsView: View {
     
     init(filter: FilterType) {
         self.filter = filter
-
+        
         if filter != .none {
             let showContactedOnly = filter == .contacted
-
+            
             _prospects = Query(filter: #Predicate {
                 $0.isContacted == showContactedOnly
-            }, sort: [SortDescriptor(\Prospect.name)])
+            })
         }
     }
+
     
     func handleScan(result: Result<ScanResult, ScanError>) {
         isShowingScanner = false
@@ -117,9 +146,10 @@ struct ProspectsView: View {
             let details = result.string.components(separatedBy: "\n")
             guard details.count == 2 else { return }
             
-            let person = Prospect(name: details[0], 
+            let person = Prospect(name: details[0],
                                   emailAddress: details[1],
-                                  isContacted: false)
+                                  isContacted: false, 
+                                  creationDate: .now)
             
             modelContext.insert(person)
         case .failure(let error):
@@ -135,24 +165,24 @@ struct ProspectsView: View {
     
     func addNotification(for prospect: Prospect) {
         let center = UNUserNotificationCenter.current()
-
+        
         let addRequest = {
             let content = UNMutableNotificationContent()
             content.title = "Contact \(prospect.name)"
             content.subtitle = prospect.emailAddress
             content.sound = UNNotificationSound.default
-
-//            var dateComponents = DateComponents()
-//            dateComponents.hour = 9
-//            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            
+            //            var dateComponents = DateComponents()
+            //            dateComponents.hour = 9
+            //            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             
             // For testing purposes
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-
+            
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
             center.add(request)
         }
-
+        
         center.getNotificationSettings { settings in
             if settings.authorizationStatus == .authorized {
                 addRequest()

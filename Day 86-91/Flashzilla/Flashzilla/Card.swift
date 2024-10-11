@@ -5,7 +5,10 @@
 //  Created by Tiago Valente on 09/10/2024.
 //
 
-struct Card: Codable {
+import Foundation
+
+struct Card: Codable, Identifiable {
+    var id = UUID()
     var prompt: String
     var answer: String
 

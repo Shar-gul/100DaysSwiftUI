@@ -17,9 +17,8 @@ class Favorites {
 
     init() {
         // load our saved data
-
-        // still here? Use an empty array
-        resorts = []
+        let tempResorts = UserDefaults.standard.object(forKey: key) as? [String] ?? []
+        resorts = Set(tempResorts)
     }
 
     // returns true if our set contains this resort
@@ -41,5 +40,7 @@ class Favorites {
 
     func save() {
         // write out our data
+        let tempArray = Array(resorts)
+        UserDefaults.standard.setValue(tempArray, forKey: key)
     }
 }

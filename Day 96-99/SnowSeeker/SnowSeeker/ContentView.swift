@@ -8,14 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
+    private enum SortSelection {
+        case none
+        case alphabetically
+        case countryAlphabetically
+    }
+    
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     
     @State private var favorites = Favorites()
     @State private var searchText = ""
+    @State private var sortedSelection: SortSelection = .none
     
-    var filteredResorts: [Resort] {
+    private var sortedResorts: [Resort] {
+        switch sortedSelection {
+        case .none:
+            filteredResorts
+        case .alphabetically:
+            filteredResorts.sorted { $0.name < $1.name }
+        case .countryAlphabetically:
+            // Sort by country & sort alphabetically within same country.
+            filteredResorts.sorted {
+                $0.country == $1.country ? $0.name < $1.name : $0.country < $1.country
+            }
+        }
+    }
+    
+    private var filteredResorts: [Resort] {
         if searchText.isEmpty {
-           resorts
+            resorts
         } else {
             resorts.filter { $0.name.localizedStandardContains(searchText) }
         }
@@ -23,7 +44,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationSplitView {
-            List(filteredResorts) { resort in
+            List(sortedResorts) { resort in
                 NavigationLink(value: resort) {
                     HStack {
                         Image(resort.country)
@@ -57,6 +78,20 @@ struct ContentView: View {
             .navigationTitle("Resorts")
             .navigationDestination(for: Resort.self) { resort in
                 ResortView(resort: resort)
+            }
+            .toolbar {
+                Menu("Sort", systemImage: "arrow.up.arrow.down") {
+                    Picker("Sort", selection: $sortedSelection) {
+                        Text("None")
+                            .tag(SortSelection.none)
+                        
+                        Text("Sort Alphabetically")
+                            .tag(SortSelection.alphabetically)
+                        
+                        Text("Sort by Country")
+                            .tag(SortSelection.countryAlphabetically)
+                    }
+                }
             }
             .searchable(text: $searchText, prompt: "Search for a resort")
         } detail: {
